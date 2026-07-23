@@ -1,0 +1,4 @@
+gateway/certs/
+report-*.html
+scan-*.xml
+*.log
