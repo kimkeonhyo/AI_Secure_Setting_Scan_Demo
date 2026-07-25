@@ -9,11 +9,13 @@ dnf install -y aide >/dev/null 2>&1 || true
 # 모델 파일 보호 대상 추가 (AI 인프라 특화 데모)
 mkdir -p /opt/models
 echo "FAKE-MODEL-WEIGHTS-v1" > /opt/models/model.bin
-grep -q '/opt/models' /etc/aide.conf 2>/dev/null || echo "/opt/models NORMAL" >> /etc/aide.conf
+grep -q '/opt/models' /etc/aide.conf 2>/dev/null || echo "/opt/models p+i+n+u+g+s+sha256" >> /etc/aide.conf
 
 echo "==> 기준(baseline) DB 생성 ... (수 분 소요될 수 있음)"
 aide --init
-cp -f /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz 2>/dev/null || true
+# DB 경로가 배포판마다 다름 (Rocky: /etc/aide.db, Ubuntu: /var/lib/aide/*.gz)
+cp -f /etc/aide.db.new /etc/aide.db 2>/dev/null \
+  || cp -f /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz 2>/dev/null || true
 echo "  baseline 생성 완료."
 
 echo

@@ -32,7 +32,7 @@ echo
 echo "==> 데모 방법 (터미널 2개 사용)"
 echo "  [터미널 A] 감시 시작 (60초):"
 echo "      sudo falco -M 60"
-echo "      * 커널 드라이버 오류 시:  sudo falco --modern-bpf -M 60"
+echo "      * 커널 드라이버 오류 시:  sudo falco -o engine.kind=modern_ebpf -M 60"
 echo
 echo "  [터미널 B] 공격 시뮬레이션(아무 계정이나):"
 echo "      sudo -u nobody cat /opt/models/model.bin    # 모델 파일 비인가 접근"
