@@ -13,6 +13,7 @@
 | AI Gateway (인증된 요청만 통과) | TLS 1.3 + 토큰 인증 + rate limit + 프롬프트 필터 | `gateway/` |
 | 망분리(논리) + egress 제한 | Docker 내부망(inference 외부 노출 없음) | `gateway/docker-compose.yml` |
 | 취약점 조치 절차 | Trivy 스캔 → CVSS 정렬 → 패치 → 재스캔 | `05_vuln_scan.sh` |
+| 망분리 default-deny (망연계 원리) | Docker 망 2개 — 기본 차단 + 명시적 허용만 통과 | `06_netseg_demo.sh` |
 
 ## 사전 준비
 
@@ -60,6 +61,9 @@ cd gateway && bash gen_certs.sh && sudo docker compose up -d --build && cd ..
 
 # 6) 취약점 조치 절차 시연
 sudo bash 05_vuln_scan.sh
+
+# 7) 망분리(default-deny) 시연 — 세그먼트 간 기본 차단 → 명시적 허용만 통과
+bash 06_netseg_demo.sh
 ```
 
 시연 대본과 캡처 포인트는 [DEMO.md](DEMO.md) 참고.
