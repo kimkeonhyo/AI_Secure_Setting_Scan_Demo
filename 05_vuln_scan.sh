@@ -26,9 +26,9 @@ echo "==> [2] 위험도 평가 → 우선순위 (위 목록의 CRITICAL 부터 �
 echo "==> [3] 패치 후 재스캔 — 최신 베이스로 교체 시 취약점 감소 확인"
 echo "    trivy image --severity HIGH,CRITICAL --scanners vuln python:3.12-slim | head -40"
 echo
-echo "==> (선택) 이 VM 자체의 OS 패키지 CVE 스캔:"
-echo "    sudo trivy rootfs --severity HIGH,CRITICAL / | head -40"
+echo "==> (선택) 이 VM 자체의 OS 패키지 CVE 스캔 (빠른 옵션):"
+echo "    sudo trivy rootfs --scanners vuln --severity HIGH,CRITICAL --skip-dirs /home / | head -40"
 echo "    sudo dnf update -y   # 패치 적용 후"
-echo "    sudo trivy rootfs --severity HIGH,CRITICAL / | head -40   # 재스캔"
+echo "    sudo trivy rootfs --scanners vuln --severity HIGH,CRITICAL --skip-dirs /home / | head -40   # 재스캔"
 echo
 echo "이 스캔→평가→패치→재스캔 흐름이 곧 '취약점 조치 절차(순환)' 슬라이드의 실물 증거입니다."
