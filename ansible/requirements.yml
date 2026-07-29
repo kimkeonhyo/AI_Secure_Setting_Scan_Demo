@@ -1,5 +1,6 @@
 ---
 # ansible-galaxy collection install -r requirements.yml
+# ansible.posix 2.0+ requires ansible-core 2.15+; pin <2.0.0 for core 2.14
 collections:
   - name: ansible.posix
-  - name: community.general
+    version: ">=1.5.0,<2.0.0"
