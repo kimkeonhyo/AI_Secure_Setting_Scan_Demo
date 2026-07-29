@@ -11,15 +11,14 @@
 - name: AIDE baseline DB 초기화 (최초 1회)
   ansible.builtin.command: aide --init
   args:
-    creates: /var/lib/aide/aide.db.new.gz
+    creates: "{{ aide_db }}"
   when: install_aide
 
-- name: AIDE DB 활성화
-  ansible.builtin.copy:
-    src: /var/lib/aide/aide.db.new.gz
-    dest: "{{ aide_db }}"
-    remote_src: true
-    force: false
+- name: AIDE DB 활성화 (new -> active)
+  ansible.builtin.command: "mv -f /var/lib/aide/aide.db.new.gz {{ aide_db }}"
+  args:
+    creates: "{{ aide_db }}"
+    removes: /var/lib/aide/aide.db.new.gz
   when: install_aide
 
 # --- D5 Trivy (aquasecurity repo) ---
