@@ -60,5 +60,5 @@ oscap xccdf generate fix --fix-type ansible \
 
 - 본 playbook은 멱등적으로 안전한 OS 레벨 하드닝/스캔을 다룹니다.
 - Verified Boot · Full Disk Encryption · 커널 모듈 서명/lockdown 등 **부팅/하드웨어 레벨 항목**은
-  골든 이미지 · 부트 구성 단계에서 적용되며 본 런뛸의 범위 밖입니다.
+  골든 이미지 · 부트 구성 단계에서 적용되며 본 데모의 범위 밖입니다.
 - 대상 OS: Rocky Linux 8/9 (RHEL 계열). datastream 경로는 `group_vars/all.yml`에서 조정.
