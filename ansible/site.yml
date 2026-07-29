@@ -1,0 +1,15 @@
+---
+# AI 서버(OS) 보안 - 하드닝 -> 도구 설치 -> 컴플라이언스 스캔 자동화
+#   전체:        ansible-playbook site.yml
+#   하드닝만:   ansible-playbook site.yml --tags hardening
+#   스캔만:     ansible-playbook site.yml --tags scan
+- name: AI 서버 보안 실증 자동화 (하드닝 -> 도구 -> 스캔)
+  hosts: secure_servers
+  become: true
+  roles:
+    - role: hardening        # D1 OS 하드닝 (멱등)
+      tags: [hardening]
+    - role: security_tools   # D2 AIDE / D3 Falco / D5 Trivy / D6 docker
+      tags: [tools]
+    - role: compliance_scan  # D1 OpenSCAP / D5 Trivy 스캔 + 리포트 수집
+      tags: [scan]

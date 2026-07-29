@@ -1,0 +1,5 @@
+---
+oscap_report_html: "{{ scan_report_dir }}/openscap-report.html"
+oscap_result_xml: "{{ scan_report_dir }}/openscap-results.xml"
+oscap_ansible_fix: "{{ scan_report_dir }}/oscap-remediation.yml"
+trivy_report: "{{ scan_report_dir }}/trivy-report.txt"

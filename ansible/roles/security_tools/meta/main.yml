@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: security_tools
+  author: kimkeonhyo
+  description: 보안 도구 설치 (AIDE / Falco / Trivy / docker)
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions: ["8", "9"]
+dependencies: []
