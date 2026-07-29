@@ -1,0 +1,86 @@
+---
+# D2 / D3 / D5 / D6 - 보안 도구 설치 / 구성 (환경 재현성)
+
+# --- D2 AIDE (파일 무결성 감시) ---
+- name: AIDE 설치
+  ansible.builtin.package:
+    name: aide
+    state: present
+  when: install_aide
+
+- name: AIDE baseline DB 초기화 (최초 1회)
+  ansible.builtin.command: aide --init
+  args:
+    creates: /var/lib/aide/aide.db.new.gz
+  when: install_aide
+
+- name: AIDE DB 활성화
+  ansible.builtin.copy:
+    src: /var/lib/aide/aide.db.new.gz
+    dest: "{{ aide_db }}"
+    remote_src: true
+    force: false
+  when: install_aide
+
+# --- D5 Trivy (aquasecurity repo) ---
+- name: Trivy repo 등록
+  ansible.builtin.yum_repository:
+    name: aquasecurity
+    description: Aqua Security Trivy
+    baseurl: https://aquasecurity.github.io/trivy-repo/rpm/releases/$basearch/
+    gpgcheck: false
+    enabled: true
+  when: install_trivy
+
+- name: Trivy 설치
+  ansible.builtin.package:
+    name: trivy
+    state: present
+  when: install_trivy
+
+# --- D3 Falco (falcosecurity repo) ---
+- name: Falco GPG 키 등록
+  ansible.builtin.rpm_key:
+    key: https://falco.org/repo/falcosecurity-packages.asc
+    state: present
+  when: install_falco
+
+- name: Falco repo 등록
+  ansible.builtin.yum_repository:
+    name: falcosecurity
+    description: Falco Security
+    baseurl: https://download.falco.org/packages/rpm/
+    gpgcheck: true
+    gpgkey: https://falco.org/repo/falcosecurity-packages.asc
+    enabled: true
+  when: install_falco
+
+- name: Falco 설치
+  ansible.builtin.package:
+    name: falco
+    state: present
+  when: install_falco
+
+# --- D6 docker (망분리 default-deny) ---
+- name: docker-ce repo 등록
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: "0644"
+  when: install_docker
+
+- name: docker 설치
+  ansible.builtin.package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  when: install_docker
+
+- name: docker 활성화 / 기동
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+  when: install_docker

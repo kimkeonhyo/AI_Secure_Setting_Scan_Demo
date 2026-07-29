@@ -1,0 +1,44 @@
+---
+# D1 - OS 하드닝 (bash 대비 멱등: 몇 번 실행해도 목표 상태로 수렴)
+
+- name: 커널 sysctl 하드닝 (ASLR / 네트워크 스택)
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/90-hardening.conf
+    state: present
+    reload: true
+  loop: "{{ hardening_sysctl | dict2items }}"
+
+- name: SELinux enforcing (강제적 접근통제 / MAC)
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
+
+- name: SSH 하드닝 (계정 / 접근 통제)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    validate: "sshd -t -f %s"
+  loop: "{{ hardening_sshd }}"
+  notify: restart sshd
+
+- name: /dev/shm 마운트 하드닝 (noexec / nosuid / nodev)
+  ansible.posix.mount:
+    path: /dev/shm
+    src: tmpfs
+    fstype: tmpfs
+    opts: defaults,noexec,nosuid,nodev
+    state: mounted
+
+- name: auditd 설치 (감사 로깅)
+  ansible.builtin.package:
+    name: audit
+    state: present
+
+- name: auditd 활성화 / 기동
+  ansible.builtin.service:
+    name: auditd
+    enabled: true
+    state: started

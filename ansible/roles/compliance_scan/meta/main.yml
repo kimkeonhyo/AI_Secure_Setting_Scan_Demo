@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: compliance_scan
+  author: kimkeonhyo
+  description: OpenSCAP CIS 평가 + Ansible 조치 playbook 자동생성, Trivy 스캔
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions: ["8", "9"]
+dependencies: []

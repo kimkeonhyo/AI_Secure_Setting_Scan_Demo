@@ -1,0 +1,55 @@
+---
+# D1 / D5 - 컴플라이언스 · 취약점 스캔 + Ansible 조치 playbook 자동 생성
+
+- name: 리포트 디렉터리 생성
+  ansible.builtin.file:
+    path: "{{ scan_report_dir }}"
+    state: directory
+    mode: "0750"
+
+- name: OpenSCAP(SCAP Security Guide) 설치
+  ansible.builtin.package:
+    name:
+      - openscap-scanner
+      - scap-security-guide
+    state: present
+
+# oscap eval 은 미준수 항목이 있으면 exit 2 -> 실패로 보지 않음
+- name: OpenSCAP CIS 평가 (D1)
+  ansible.builtin.command: >
+    oscap xccdf eval
+    --profile {{ oscap_profile }}
+    --results {{ oscap_result_xml }}
+    --report {{ oscap_report_html }}
+    {{ oscap_datastream }}
+  register: oscap_eval
+  failed_when: oscap_eval.rc not in [0, 2]
+  changed_when: false
+
+- name: "OpenSCAP -> Ansible 조치 playbook 자동 생성 (핵심)"
+  ansible.builtin.command: >
+    oscap xccdf generate fix
+    --fix-type ansible
+    --profile {{ oscap_profile }}
+    --output {{ oscap_ansible_fix }}
+    {{ oscap_datastream }}
+  args:
+    creates: "{{ oscap_ansible_fix }}"
+
+- name: Trivy 이미지 취약점 스캔 (D5)
+  ansible.builtin.command: >
+    trivy image --scanners vuln --severity HIGH,CRITICAL
+    --output {{ trivy_report }} {{ trivy_target_image }}
+  changed_when: false
+  when: install_trivy | default(true)
+
+- name: 스캔 리포트를 대상 호스트 -> 컨트롤 노드로 수집
+  ansible.builtin.fetch:
+    src: "{{ item }}"
+    dest: "reports/"
+    flat: true
+  loop:
+    - "{{ oscap_report_html }}"
+    - "{{ oscap_ansible_fix }}"
+    - "{{ trivy_report }}"
+  ignore_errors: true

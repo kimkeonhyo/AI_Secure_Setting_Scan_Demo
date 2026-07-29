@@ -1,0 +1,17 @@
+---
+# sysctl 커널 하드닝 (OpenSCAP CIS와 동일 항목 - ASLR / 네트워크 스택)
+hardening_sysctl:
+  kernel.randomize_va_space: "2"            # ASLR 최대
+  net.ipv4.conf.all.rp_filter: "1"          # IP 스푸핑 차단
+  net.ipv4.conf.all.accept_redirects: "0"   # ICMP 리다이렉트 무시
+  net.ipv4.conf.all.send_redirects: "0"
+  net.ipv4.conf.all.accept_source_route: "0"
+  net.ipv4.icmp_echo_ignore_broadcasts: "1" # Smurf DoS 차단
+  net.ipv4.tcp_syncookies: "1"              # SYN flood 차단
+
+# SSH 하드닝 항목
+hardening_sshd:
+  - { key: "PermitRootLogin", value: "no" }
+  - { key: "PasswordAuthentication", value: "no" }
+  - { key: "X11Forwarding", value: "no" }
+  - { key: "MaxAuthTries", value: "4" }

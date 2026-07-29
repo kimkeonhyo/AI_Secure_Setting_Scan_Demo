@@ -1,0 +1,5 @@
+---
+- name: restart falco
+  ansible.builtin.service:
+    name: falco
+    state: restarted

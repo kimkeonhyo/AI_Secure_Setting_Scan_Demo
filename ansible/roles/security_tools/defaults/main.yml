@@ -1,0 +1,8 @@
+---
+# 설치 토글
+install_aide: true      # D2 파일 무결성(FIM)
+install_falco: true     # D3 런타임 IDS/EDR
+install_trivy: true     # D5 취약점 스캔
+install_docker: true    # D6 망분리(default-deny)
+
+aide_db: /var/lib/aide/aide.db.gz

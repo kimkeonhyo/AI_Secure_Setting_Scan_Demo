@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: hardening
+  author: kimkeonhyo
+  description: AI 서버 OS 하드닝 (sysctl / SELinux / SSH / auditd)
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions: ["8", "9"]
+dependencies: []

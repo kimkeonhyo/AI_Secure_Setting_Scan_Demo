@@ -1,0 +1,11 @@
+---
+# 스캔 리포트 저장 경로 (대상 호스트)
+scan_report_dir: /var/log/security-scan
+
+# OpenSCAP (D1) - Rocky Linux SCAP Security Guide
+# Rocky 9: ssg-rl9-ds.xml  /  Rocky 8: ssg-rl8-ds.xml
+oscap_datastream: /usr/share/xml/scap/ssg/content/ssg-rl9-ds.xml
+oscap_profile: xccdf_org.ssgproject.content_profile_cis
+
+# Trivy (D5) - 취약점 스캔 대상 이미지
+trivy_target_image: "python:3.12-slim"
